@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Checkout</title>
+</head>
+<body>
+
+    <div style="display: flex; justify-content: space-between; max-width: 1000px; margin: 0 auto;">
+        <div style="border: 1px solid #333; padding: 20px; border-radius: 20px;">
+            <h1>Product One</h1>
+            <p>price</p>
+            <button value="price_1PBc6GRu4afoUwfg13wielA7"> 100$ </button>
+            <button value="price_1PCfjnRu4afoUwfgwlP5CIJE"> 1000$ </button>
+        </div>
+        <div style="border: 1px solid #333; padding: 20px; border-radius: 20px;">
+            <h1>Product Two</h1>
+            <p>price</p>
+            <button value="price_1PBc6GRu4afoUwfg13wielA7"> 100$ </button>
+            <button value="price_1PCfjnRu4afoUwfgwlP5CIJE"> 1000$ </button>
+        </div>
+        <div style="border: 1px solid #333; padding: 20px; border-radius: 20px;">
+            <h1>Product Three</h1>
+            <p>price</p>
+            <button value="price_1PBc6GRu4afoUwfg13wielA7"> 100$ </button>
+            <button value="price_1PCfjnRu4afoUwfgwlP5CIJE"> 1000$ </button>
+        </div>
+    </div>
+
+    <script>
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((button) => {
+            button.onclick = () => {
+                const priceId = button.value;
+                fetch('http://localhost:3000/api/stripe/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ priceId: priceId }), 
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok');
+                })
+                .then(data => {
+                    console.log(data)
+                    if (data.url) {
+                        window.location.href = data.url; // Переадресація на отриманий URL
+                    } else {
+                        console.error("No URL found in response");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error creating checkout session:', error);
+                });
+            };
+        });
+    </script>
+
+</body>
+</html>

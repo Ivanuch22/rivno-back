@@ -1,0 +1,3701 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "My API",
+        "version": "1.0.0",
+        "description": "API for managing users and authentication"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Development server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Users",
+            "description": "Endpoints for user operations"
+        },
+        {
+            "name": "Sites",
+            "description": "Endpoints for sites operations"
+        },
+        {
+            "name": "Auth",
+            "description": "Endpoints for Google Auth operations"
+        },
+        {
+            "name": "Status",
+            "description": "Endpoints for Status operations"
+        }
+    ],
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "paths": {
+        "/api/users/auth": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Check user authentication",
+                "description": "This endpoint checks the authentication of the user with the provided token.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "user": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 16
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "ivan.kalunuch12@gmail.com"
+                                                },
+                                                "is_verified": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "full_name": {
+                                                    "type": "string",
+                                                    "example": "Іван Калинич"
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "USA"
+                                                },
+                                                "createdAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-05-09T09:34:47.186Z"
+                                                },
+                                                "updatedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-05-09T09:34:47.186Z"
+                                                },
+                                                "avatar": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "state": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "city": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "zip_code": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "secret_question": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "secret_answer": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "alternate_email": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "alternate_phone": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "googleId": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "stripe_customer_id": {
+                                                    "type": "string",
+                                                    "example": "cus_Q4MNSdHNSkv584"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/verify-email": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Verify user's email",
+                "description": "This endpoint verifies the user's email with the provided token.",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "description": "Verification token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email verified",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/pass-reset": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get password reset page",
+                "description": "This endpoint returns the page for resetting the password.",
+                "responses": {
+                    "200": {
+                        "description": "Password reset page",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/registration": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Register a new user",
+                "description": "This endpoint registers a new user with the provided information.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserRegistration"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged in successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "access": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        },
+                                        "refresh": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        },
+                                        "user": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 16
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "ivan.kalunuch12@gmail.com"
+                                                },
+                                                "is_verified": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "full_name": {
+                                                    "type": "string",
+                                                    "example": "Іван Калинич"
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "USA"
+                                                },
+                                                "createdAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-05-09T09:34:47.186Z"
+                                                },
+                                                "updatedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-05-09T09:34:47.186Z"
+                                                },
+                                                "avatar": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "state": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "city": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "zip_code": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "secret_question": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "secret_answer": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "alternate_email": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "alternate_phone": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "googleId": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "stripe_customer_id": {
+                                                    "type": "string",
+                                                    "example": "cus_Q4MNSdHNSkv584"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User login",
+                "description": "This endpoint allows a user to log in with email and password.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserLogin"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged in successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "access": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        },
+                                        "refresh": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        },
+                                        "user": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 16
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "ivan.kalunuch12@gmail.com"
+                                                },
+                                                "is_verified": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "full_name": {
+                                                    "type": "string",
+                                                    "example": "Іван Калинич"
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "USA"
+                                                },
+                                                "createdAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-05-09T09:34:47.186Z"
+                                                },
+                                                "updatedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-05-09T09:34:47.186Z"
+                                                },
+                                                "avatar": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "state": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "city": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "zip_code": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "secret_question": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "secret_answer": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "alternate_email": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "alternate_phone": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "googleId": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "stripe_customer_id": {
+                                                    "type": "string",
+                                                    "example": "cus_Q4MNSdHNSkv584"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/forgot-password": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Forgot password request",
+                "description": "This endpoint allows a user to request a password reset.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ForgotPassword"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password reset request sent",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/reset-password": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Reset password",
+                "description": "This endpoint allows a user to reset the password after authentication.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResetPassword"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password reset successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/send-verification": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Send email verification",
+                "description": "This endpoint sends a verification email for user validation.",
+                "requestBody": {},
+                "responses": {
+                    "200": {
+                        "description": "Verification email sent",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/refresh-token": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Refresh access token",
+                "description": "This endpoint allows the user to refresh the access token using a refresh token.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RefreshToken"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Access token refreshed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid refresh token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sites/list": {
+            "get": {
+                "tags": [
+                    "Sites"
+                ],
+                "summary": "Get list of sites",
+                "description": "Retrieves a list of sites associated with the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of sites retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "listSites": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Site"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Subscription is not active",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sites/add": {
+            "post": {
+                "tags": [
+                    "Sites"
+                ],
+                "summary": "Add a new site",
+                "description": "Adds a new site to the user's account. Requires a valid subscription and site limit check.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "link": {
+                                        "type": "string",
+                                        "description": "The link to the new site",
+                                        "example": "http://example.com"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Site added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "listSites": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Site"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Site limit reached",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Site limit reached"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sites/change": {
+            "put": {
+                "tags": [
+                    "Sites"
+                ],
+                "summary": "Update site information",
+                "description": "Updates the link for a specific site.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "site_id": {
+                                        "type": "integer",
+                                        "description": "The ID of the site to be updated",
+                                        "example": 1
+                                    },
+                                    "link": {
+                                        "type": "string",
+                                        "description": "New link for the site",
+                                        "example": "http://newexample.com"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Site information updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "listSites": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Site"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Site not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sites/regenerate-key": {
+            "put": {
+                "tags": [
+                    "Sites"
+                ],
+                "summary": "Regenerate site key",
+                "description": "Regenerates the key for a specific site.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "site_id": {
+                                        "type": "integer",
+                                        "description": "The ID of the site to regenerate the key for",
+                                        "example": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Site key regenerated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Site key regenerated successfully"
+                                        },
+                                        "newKey": {
+                                            "type": "string",
+                                            "example": "new-key-value"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Site not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sites/delete": {
+            "delete": {
+                "tags": [
+                    "Sites"
+                ],
+                "summary": "Delete a site",
+                "description": "Deletes a specific site from the user's account.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "site_id": {
+                                        "type": "integer",
+                                        "description": "The ID of the site to delete",
+                                        "example": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Site deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Site deleted successfully"
+                                        },
+                                        "listSites": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Site"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Site not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Google login page",
+                "description": "Renders the Google login page.",
+                "responses": {
+                    "200": {
+                        "description": "Login page rendered",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Page not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/google": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Google authentication",
+                "description": "Initiates Google OAuth login.",
+                "responses": {
+                    "302": {
+                        "description": "Redirect to Google OAuth",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "redirect_url": {
+                                            "type": "string",
+                                            "example": "https://accounts.google.com/o/oauth2/auth"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/google/callback": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Google OAuth callback",
+                "description": "Handles Google OAuth callback and provides tokens upon successful login.",
+                "responses": {
+                    "200": {
+                        "description": "Successful authentication",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "tokens": {
+                                            "type": "object",
+                                            "properties": {
+                                                "access": {
+                                                    "type": "string",
+                                                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                                },
+                                                "refresh": {
+                                                    "type": "string",
+                                                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/status/list": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "List all statuses",
+                "description": "Fetches a list of all status entries.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of statuses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StatusListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/status/add": {
+            "post": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Add a new status",
+                "description": "Creates a new status entry.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StatusListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/status/change": {
+            "put": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Change a status",
+                "description": "Modifies an existing status entry.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status changed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StatusListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Status not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/status/delete": {
+            "delete": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Delete a status",
+                "description": "Deletes an existing status entry.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StatusListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Status not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/plan/list": {
+            "get": {
+                "tags": [
+                    "Plan"
+                ],
+                "summary": "List all subscription plans",
+                "description": "Fetches a list of all subscription plans.",
+                "responses": {
+                    "200": {
+                        "description": "List of subscription plans",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlanListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/plan/add": {
+            "post": {
+                "tags": [
+                    "Plan"
+                ],
+                "summary": "Add a new subscription plan",
+                "description": "Creates a new subscription plan.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddPlanRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Plan added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlanListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/plan/change": {
+            "put": {
+                "tags": [
+                    "Plan"
+                ],
+                "summary": "Change an existing subscription plan",
+                "description": "Modifies an existing subscription plan.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePlanRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Plan changed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Plan not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/plan/delete": {
+            "delete": {
+                "tags": [
+                    "Plan"
+                ],
+                "summary": "Delete an existing subscription plan",
+                "description": "Deletes a specific subscription plan.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeletePlanRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Plan deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlanListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Plan not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/letter/user-letters": {
+            "get": {
+                "tags": [
+                    "Letter"
+                ],
+                "summary": "Get all user letters",
+                "description": "Fetches all letters for the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of user letters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LetterListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/letter/user-letters/status/{status_id}": {
+            "get": {
+                "tags": [
+                    "Letter"
+                ],
+                "summary": "Get user letters by status",
+                "description": "Fetches letters for the authenticated user by status.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "status_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "The ID of the status to filter by",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of user letters by status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LetterListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/letter/user-letters/timeframe/{period}": {
+            "get": {
+                "tags": [
+                    "Letter"
+                ],
+                "summary": "Get user letters by timeframe",
+                "description": "Fetches letters for the authenticated user within a specified timeframe.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "period",
+                        "in": "path",
+                        "required": true,
+                        "description": "The timeframe to filter by (day, week, month, half-year)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of user letters by timeframe",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LetterListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/letter/add": {
+            "post": {
+                "tags": [
+                    "Letter"
+                ],
+                "summary": "Add a new letter",
+                "description": "Creates a new letter.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddLetterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Letter added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LetterResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/letter/change-status": {
+            "put": {
+                "tags": [
+                    "Letter"
+                ],
+                "summary": "Change letter status",
+                "description": "Updates the status of an existing letter.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeLetterStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status changed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Letter not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/letter/delete": {
+            "delete": {
+                "tags": [
+                    "Letter"
+                ],
+                "summary": "Delete an existing letter",
+                "description": "Deletes a specific letter.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteLetterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Letter deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Letter not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/stripe/products": {
+            "get": {
+                "tags": [
+                    "Stripe"
+                ],
+                "summary": "Display Stripe products page",
+                "description": "Renders a page showing available Stripe products.",
+                "responses": {
+                    "200": {
+                        "description": "Products page",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/stripe/success": {
+            "get": {
+                "tags": [
+                    "Stripe"
+                ],
+                "summary": "Stripe success page",
+                "description": "Renders the Stripe success page after successful payment.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ], 
+                "responses": {
+                    "200": {
+                        "description": "Stripe success page",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/stripe/cancel": {
+            "get": {
+                "tags": [
+                    "Stripe"
+                ],
+                "summary": "Stripe cancel page",
+                "description": "Renders the Stripe cancel page after a failed or canceled payment.",
+                "responses": {
+                    "200": {
+                        "description": "Stripe cancel page",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/stripe/create-checkout-session": {
+            "post": {
+                "tags": [
+                    "Stripe"
+                ],
+                "summary": "Create a Stripe checkout session",
+                "description": "Creates a Stripe checkout session for a new subscription.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCheckoutSessionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Checkout session created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateCheckoutSessionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/webhook": {
+            "post": {
+                "tags": [
+                    "Stripe"
+                ],
+                "summary": "Stripe webhook endpoint",
+                "description": "Handles Stripe webhook events.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Webhook handled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/subscription/invoices-list": {
+            "get": {
+                "tags": [
+                    "Subscription"
+                ],
+                "summary": "Get a list of user invoices",
+                "description": "Fetches a list of invoices for the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of user invoices",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InvoiceListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invoices not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/subscription/invoice-download": {
+            "post": {
+                "tags": [
+                    "Subscription"
+                ],
+                "summary": "Download a user invoice",
+                "description": "Downloads a specific invoice for the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InvoiceDownloadRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "302": {
+                        "description": "Redirect to the invoice URL",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "url": {
+                                            "type": "string",
+                                            "example": "https://example.com/invoice-url"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invoice not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/subscription/delete-subscription": {
+            "get": {
+                "tags": [
+                    "Subscription"
+                ],
+                "summary": "Delete subscription ",
+                "description": "Downloads a specific invoice for the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sub delete successfull",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invoice not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/subscription/retrieve-subscription": {
+            "get": {
+                "tags": [
+                    "Subscription"
+                ],
+                "summary": "Get sub status ",
+                "description": "Get sub status for the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sub delete successfull",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubSuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Subscription not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tikets/my-tickets": {
+            "get": {
+                "tags": [
+                    "Ticket"
+                ],
+                "summary": "Get user's support tickets",
+                "description": "Fetches all support tickets for the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of user tickets",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TicketListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tikets/my-tickets/status/{status}": {
+            "get": {
+                "tags": [
+                    "Ticket"
+                ],
+                "summary": "Get user's support tickets by status",
+                "description": "Fetches support tickets for the authenticated user filtered by status.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "required": true,
+                        "description": "The status of the tickets",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of user tickets by status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TicketListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tikets/all-tickets": {
+            "get": {
+                "tags": [
+                    "Ticket"
+                ],
+                "summary": "Get all support tickets (admin only)",
+                "description": "Fetches all support tickets (admin-only access).",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of all support tickets",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TicketListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tikets/all-tickets/status/{status}": {
+            "get": {
+                "tags": [
+                    "Ticket"
+                ],
+                "summary": "Get all support tickets by status (admin only)",
+                "description": "Fetches all support tickets by status (admin-only access).",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "required": true,
+                        "description": "The status of the tickets",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of all support tickets by status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TicketListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tikets/create-ticket": {
+            "post": {
+                "tags": [
+                    "Ticket"
+                ],
+                "summary": "Create a new support ticket",
+                "description": "Creates a new support ticket for the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTicketRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ticket created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TicketResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tikets/respond-ticket/{ticket_id}": {
+            "post": {
+                "tags": [
+                    "Ticket"
+                ],
+                "summary": "Respond to a support ticket (admin only)",
+                "description": "Adds a response to an existing support ticket (admin-only access).",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "ticket_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "The ID of the ticket to respond to",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RespondTicketRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Response added to the ticket",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TicketResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ticket not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tikets/update-ticket-status/{ticket_id}": {
+            "put": {
+                "tags": [
+                    "Ticket"
+                ],
+                "summary": "Update a ticket's status (admin only)",
+                "description": "Updates the status of a specific support ticket (admin-only access).",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "ticket_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "The ID of the ticket to update",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTicketStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ticket status updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ticket not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/addons/all": {
+            "get": {
+                "tags": [
+                    "Addon"
+                ],
+                "summary": "Get all subscription addons",
+                "description": "Fetches all subscription addons.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of all subscription addons",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddonListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/addons/by-plan/{plan_id}": {
+            "get": {
+                "tags": [
+                    "Addon"
+                ],
+                "summary": "Get addons by plan ID",
+                "description": "Fetches all subscription addons for a specific plan.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "plan_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "The ID of the plan",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of addons for the specified plan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddonListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No addons found for this plan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/addons/create": {
+            "post": {
+                "tags": [
+                    "Addon"
+                ],
+                "summary": "Create a new addon",
+                "description": "Creates a new subscription addon.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAddonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Addon created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddonResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/addons/update": {
+            "put": {
+                "tags": [
+                    "Addon"
+                ],
+                "summary": "Update an existing addon",
+                "description": "Updates an existing subscription addon.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAddonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Addon updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddonResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Addon not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/addons/delete": {
+            "delete": {
+                "tags": [
+                    "Addon"
+                ],
+                "summary": "Delete a subscription addon",
+                "description": "Deletes a specific subscription addon.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteAddonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Addon deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Addon not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 16
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "ivan.kalunuch12@gmail.com"
+                    },
+                    "is_verified": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "example": "https://lh3.googleusercontent.com/a/..."
+                    },
+                    "full_name": {
+                        "type": "string",
+                        "example": "Іван Калинич"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "state": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "zip_code": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "secret_question": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "secret_answer": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "alternate_email": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "alternate_phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "googleId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "stripe_customer_id": {
+                        "type": "string",
+                        "example": "cus_Q4MNSdHNSkv584"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-04-30T06:56:05.347Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-08T16:48:03.814Z"
+                    }
+                }
+            },
+            "UserRegistration": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "example@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "Password123"
+                    },
+                    "full_name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "USA"
+                    },
+                    "isSendMessage": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "UserLogin": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "example@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "Password123"
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "SuccessMessage": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Operation successful"
+                    }
+                }
+            },
+            "SubSuccessMessage": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "example": "active"
+                    }
+                }
+            },
+            "ForgotPassword": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "example@example.com"
+                    }
+                }
+            },
+            "ResetPassword": {
+                "type": "object",
+                "properties": {
+                    "newPassword": {
+                        "type": "string",
+                        "example": "NewPassword123"
+                    }
+                }
+            },
+            "SendVerification": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "example@example.com"
+                    }
+                }
+            },
+            "RefreshToken": {
+                "type": "object",
+                "properties": {
+                    "refreshToken": {
+                        "type": "string",
+                        "example": "some-refresh-token"
+                    }
+                }
+            },
+            "Site": {
+                "type": "object",
+                "properties": {
+                    "site_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "link": {
+                        "type": "string",
+                        "example": "http://example.com"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 16
+                    },
+                    "key": {
+                        "type": "string",
+                        "example": "unique-site-key"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-09T09:34:47.186Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-09T09:34:47.186Z"
+                    }
+                }
+            },
+            "SiteRequest": {
+                "type": "object",
+                "properties": {
+                    "site_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "link": {
+                        "type": "string",
+                        "example": "http://example.com"
+                    }
+                }
+            },
+            "RegenerateKeyRequest": {
+                "type": "object",
+                "properties": {
+                    "site_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "Status": {
+                "type": "object",
+                "properties": {
+                    "status_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status_text": {
+                        "type": "string",
+                        "example": "In Progress"
+                    }
+                }
+            },
+            "StatusListResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "listStatuses": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Status"
+                        }
+                    }
+                }
+            },
+            "AddStatusRequest": {
+                "type": "object",
+                "properties": {
+                    "status_text": {
+                        "type": "string",
+                        "example": "New Status"
+                    }
+                }
+            },
+            "ChangeStatusRequest": {
+                "type": "object",
+                "properties": {
+                    "status_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status_text": {
+                        "type": "string",
+                        "example": "Updated Status"
+                    }
+                }
+            },
+            "DeleteStatusRequest": {
+                "type": "object",
+                "properties": {
+                    "status_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "Plan": {
+                "type": "object",
+                "properties": {
+                    "plan_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "stripe_id_mo": {
+                        "type": "string",
+                        "example": "price_xxx"
+                    },
+                    "stripe_id_y": {
+                        "type": "string",
+                        "example": "price_xxx"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Standard Plan"
+                    },
+                    "price_mo": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 9.99
+                    },
+                    "price_y": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 99.99
+                    },
+                    "messages_count": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "sites_count": {
+                        "type": "integer",
+                        "example": 10
+                    }
+                }
+            },
+            "PlanListResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "listPlans": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Plan"
+                        }
+                    }
+                }
+            },
+            "AddPlanRequest": {
+                "type": "object",
+                "properties": {
+                    "stripe_id_mo": {
+                        "type": "string",
+                        "example": "price_xxx"
+                    },
+                    "stripe_id_y": {
+                        "type": "string",
+                        "example": "price_xxx"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Standard Plan"
+                    },
+                    "price_mo": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 9.99
+                    },
+                    "price_y": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 99.99
+                    },
+                    "messages_count": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "sites_count": {
+                        "type": "integer",
+                        "example": 10
+                    }
+                }
+            },
+            "ChangePlanRequest": {
+                "type": "object",
+                "properties": {
+                    "plan_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "stripe_id_mo": {
+                        "type": "string",
+                        "example": "price_xxx"
+                    },
+                    "stripe_id_y": {
+                        "type": "string",
+                        "example": "price_xxx"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Standard Plan"
+                    },
+                    "price_mo": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 9.99
+                    },
+                    "price_y": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 99.99
+                    },
+                    "messages_count": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "sites_count": {
+                        "type": "integer",
+                        "example": 10
+                    }
+                }
+            },
+            "DeletePlanRequest": {
+                "type": "object",
+                "properties": {
+                    "plan_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "Letter": {
+                "type": "object",
+                "properties": {
+                    "letter_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "site_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "body": {
+                        "type": "string",
+                        "example": "This is the content of the letter"
+                    },
+                    "status_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "LetterListResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "letters": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Letter"
+                        }
+                    }
+                }
+            },
+            "LetterResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "letter": {
+                        "type": "object",
+                        "properties": {
+                            "letter_id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "site_id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "user_id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "body": {
+                                "type": "string",
+                                "example": "This is the content of the letter"
+                            },
+                            "status_id": {
+                                "type": "integer",
+                                "example": 1
+                            }
+                        }
+                    }
+                }
+            },
+            "AddLetterRequest": {
+                "type": "object",
+                "properties": {
+                    "body": {
+                        "type": "string",
+                        "example": "This is the content of the letter"
+                    },
+                    "site_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "ChangeLetterStatusRequest": {
+                "type": "object",
+                "properties": {
+                    "letter_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status_id": {
+                        "type": "integer",
+                        "example": 2
+                    }
+                }
+            },
+            "DeleteLetterRequest": {
+                "type": "object",
+                "properties": {
+                    "letter_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "CreateCheckoutSessionRequest": {
+                "type": "object",
+                "properties": {
+                    "planId": {
+                        "type": "string",
+                        "example": "price_xxx"
+                    },
+                    "addonIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "1"
+                        }
+                    },
+                    "subType": {
+                        "type": "string",
+                            "example": "month"
+                    }
+                }
+            },
+            "CreateCheckoutSessionResponse": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "example": "https://checkout.stripe.com/pay/..."
+                    }
+                }
+            },
+            "InvoiceListResponse": {
+                "type": "object",
+                "properties": {
+                    "invoices": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "example": "in_1H2Psl2eZvKYlo2CvUVl6dhA"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "paid"
+                                },
+                                "hosted_invoice_url": {
+                                    "type": "string",
+                                    "example": "https://stripe.com/invoice-url"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "InvoiceDownloadRequest": {
+                "type": "object",
+                "properties": {
+                    "invoiceId": {
+                        "type": "string",
+                        "example": "in_1H2Psl2eZvKYlo2CvUVl6dhA"
+                    }
+                }
+            },
+            "Ticket": {
+                "type": "object",
+                "properties": {
+                    "ticket_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "This is a user ticket message."
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "open"
+                    },
+                    "admin_response": {
+                        "type": "string",
+                        "example": "This is an admin response."
+                    },
+                    "admin_id": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                }
+            },
+            "TicketListResponse": {
+                "type": "object",
+                "properties": {
+                    "tickets": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Ticket"
+                        }
+                    }
+                }
+            },
+            "CreateTicketRequest": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "This is a user ticket message."
+                    }
+                }
+            },
+            "RespondTicketRequest": {
+                "type": "object",
+                "properties": {
+                    "response": {
+                        "type": "string",
+                        "example": "This is an admin response."
+                    }
+                }
+            },
+            "UpdateTicketStatusRequest": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "closed"
+                    }
+                }
+            },
+            "Addon": {
+                "type": "object",
+                "properties": {
+                    "addon_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "stripe_id": {
+                        "type": "string",
+                        "example": "addon_xxx"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Extra Messages"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 4.99
+                    },
+                    "messages_count": {
+                        "type": "integer",
+                        "example": 25
+                    },
+                    "sites_count": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "plan_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "AddonListResponse": {
+                "type": "object",
+                "properties": {
+                    "addons": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Addon"
+                        }
+                    }
+                }
+            },
+            "CreateAddonRequest": {
+                "type": "object",
+                "properties": {
+                    "stripe_id": {
+                        "type": "string",
+                        "example": "addon_xxx"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Extra Messages"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 4.99
+                    },
+                    "messages_count": {
+                        "type": "integer",
+                        "example": 25
+                    },
+                    "sites_count": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "plan_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "UpdateAddonRequest": {
+                "type": "object",
+                "properties": {
+                    "adddon_id": {
+                        "type": "string",
+                        "example": "addon_xxx"
+                    },
+                    "stripe_id": {
+                        "type": "string",
+                        "example": "addon_xxx"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Extra Messages"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": "4.99"
+                    },
+                    "messages_count": {
+                        "type": "integer",
+                        "example": "25"
+                    },
+                    "sites_count": {
+                        "type": "integer",
+                        "example": "1"
+                    }
+                }
+            },
+            "DeleteAddonRequest": {
+                "type": "object",
+                "properties": {
+                    "addon_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "TicketResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Статус квитка. Можливі значення: 'Open', 'Closed', 'Pending' тощо."
+                    },
+                    "ticket_id": {
+                        "type": "integer",
+                        "description": "Унікальний ідентифікатор квитка."
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "description": "Унікальний ідентифікатор користувача, який створив квиток."
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Повідомлення, яке надіслав користувач у зв'язку з квитком."
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Дата та час останнього оновлення квитка."
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Дата та час створення квитка."
+                    },
+                    "admin_response": {
+                        "type": "string",
+                        "description": "Відповідь адміністратора на квиток, якщо вона є."
+                    },
+                    "admin_id": {
+                        "type": "integer",
+                        "description": "Унікальний ідентифікатор адміністратора, який обробляє квиток, якщо такий є."
+                    }
+                }
+            },
+                "AddonResponse": {
+                    "type": "object",
+                    "properties": {
+                        "addon_id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "stripe_id": {
+                            "type": "string",
+                            "example": "addon_xxx"
+                        },
+                        "name": {
+                            "type": "string",
+                            "example": "Extra Messages"
+                        },
+                        "price": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 4.99
+                        },
+                        "messages_count": {
+                            "type": "integer",
+                            "example": 25
+                        },
+                        "sites_count": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "plan_id": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                }
+            },
+            "securitySchemes": {
+                "bearerAuth": {
+                    "type": "http",
+                    "scheme": "bearer",
+                    "bearerFormat": "JWT"
+                }
+            }
+        }
+    }
