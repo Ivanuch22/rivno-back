@@ -43,6 +43,7 @@ app.post("/webhook", express.raw({ type: 'application/json' }), stripeController
 
 app.use(cors());
 app.use(express.static('public'));
+app.use('/userImages', express.static('userImages')); 
 app.use(express.urlencoded({extended:true}))
 app.use(express.json());
 app.use(fileUpload({}));

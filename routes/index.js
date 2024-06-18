@@ -11,6 +11,8 @@ const stripeRouter = require('./stripeRouter');
 const subscriptionRouter = require('./subscriptionRouter');
 const tiketRouter = require('./tiketsRouter');
 const addonRouter = require('./addonRouter');
+const aswRouter = require('./awsRouter');
+const orderRouter = require('./orderRouter');
 
 router.use("/users", usersRouter);
 router.use("/sites", siteRouter);
@@ -22,6 +24,8 @@ router.use('/stripe', stripeRouter);
 router.use('/subscription', subscriptionRouter);
 router.use('/tikets', tiketRouter);
 router.use('/addons', addonRouter);
+router.use('/aws', aswRouter);
+router.use('/orders', orderRouter);
 
 
 module.exports = router;

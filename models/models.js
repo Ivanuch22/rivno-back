@@ -30,8 +30,12 @@ const User = sequelize.define('user', {
   alternate_email: { type: DataTypes.STRING },
   alternate_phone: { type: DataTypes.STRING },
   googleId: { type: DataTypes.STRING },
-  stripe_customer_id: { type: DataTypes.STRING, allowNull: true }
-
+  stripe_customer_id: { type: DataTypes.STRING, allowNull: true },
+  role: {
+    type: DataTypes.ENUM,
+    values: ['user', 'admin'],
+    defaultValue: 'user'
+  }
 });
 const Token = sequelize.define("token", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -219,6 +223,189 @@ const Ticket = sequelize.define("ticket", {
   }
 });
 
+
+const Order = sequelize.define('order', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  middleName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  comment: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  birthDate: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  age: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  gender: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  photo1: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  photo2: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  photo3: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  photo4: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  photo5: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  photo6: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  xray: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  ctScan: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  ctLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  scan1: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  scan2: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  treatment: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  treatmentOther: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  correction: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  correctionOther: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  additionalTools: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  additionalToolsOther: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  toothExtraction: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  toothExtractionOther: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  correction2: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  correction2Other: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  gumSmileCorrection: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  midlineCorrection: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  separation: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  complaints: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  complaintsOther: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  orthopedicTreatment: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  issueCaps: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  comments: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  status_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'status',
+      key: 'status_id',
+      defaultValue: 1
+    },
+    allowNull: false,
+  },
+  user_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'users',
+      key: 'id',
+    },
+    allowNull: false,
+  },
+}, {
+  tableName: 'orders',
+});
+
+
+
+
 Plan.hasMany(Addon, {
   foreignKey: 'plan_id', // Ключ для зв'язку
   as: 'addons', // Альтернативне ім'я для асоціації
@@ -230,8 +417,6 @@ Addon.belongsTo(Plan, {
   as: 'plan', // Альтернативне ім'я для асоціації
 });
 
-User.hasMany(Ticket, { foreignKey: "user_id" });
-Ticket.belongsTo(User, { foreignKey: "user_id" });
 
 User.hasMany(UserInvoice, { foreignKey: "user_id" });
 UserInvoice.belongsTo(User, { foreignKey: "user_id" });
@@ -240,24 +425,18 @@ User.hasOne(Subscription, { foreignKey: "user_id" });
 Subscription.belongsTo(User, { foreignKey: "user_id" });
 
 
-User.hasMany(Site, { foreignKey: 'user_id' });
-Site.belongsTo(User, { foreignKey: 'user_id' });
-
 User.hasOne(Token, { foreignKey: 'userId' });
 Token.belongsTo(User, { foreignKey: 'userId' });
 
-User.hasMany(LetterArchive, { foreignKey: 'user_id' });
-LetterArchive.belongsTo(User, { foreignKey: 'user_id' });
 
-Status.hasMany(LetterArchive, { foreignKey: 'status_id' });
-LetterArchive.belongsTo(Status, { foreignKey: 'status_id' });
+User.hasMany(Order, { foreignKey: 'user_id' });
+Order.belongsTo(User, { foreignKey: 'user_id' });
 
-Site.hasMany(LetterArchive, { foreignKey: 'site_id' });
-LetterArchive.belongsTo(Site, { foreignKey: 'site_id' });
-
-
+Status.hasMany(Order, { foreignKey: 'status_id' });
+Order.belongsTo(Status, { foreignKey: 'status_id' });
 
 module.exports = {
+  Order,
   User,
   Token,
   Site,

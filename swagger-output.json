@@ -115,6 +115,9 @@
                   },
                   "isSendMessage": {
                     "example": "any"
+                  },
+                  "role": {
+                    "example": "any"
                   }
                 }
               }
@@ -246,6 +249,85 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/users/update-profile": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "example": "any"
+                  },
+                  "phone": {
+                    "example": "any"
+                  },
+                  "country": {
+                    "example": "any"
+                  },
+                  "city": {
+                    "example": "any"
+                  },
+                  "state": {
+                    "example": "any"
+                  },
+                  "zip_code": {
+                    "example": "any"
+                  },
+                  "alternate_email": {
+                    "example": "any"
+                  },
+                  "alternate_phone": {
+                    "example": "any"
+                  },
+                  "secret_question": {
+                    "example": "any"
+                  },
+                  "secret_answer": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/update-avatar": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -611,7 +693,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "stripe_id": {
+                  "stripe_id_mo": {
+                    "example": "any"
+                  },
+                  "stripe_id_y": {
                     "example": "any"
                   },
                   "name": {
@@ -662,7 +747,10 @@
                   "plan_id": {
                     "example": "any"
                   },
-                  "stripe_id": {
+                  "stripe_id_mo": {
+                    "example": "any"
+                  },
+                  "stripe_id_y": {
                     "example": "any"
                   },
                   "name": {
@@ -962,6 +1050,9 @@
                   },
                   "addonIds": {
                     "example": "any"
+                  },
+                  "subType": {
+                    "example": "any"
                   }
                 }
               }
@@ -1023,7 +1114,26 @@
       }
     },
     "/api/subscription/delete-subscription": {
-      "post": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/subscription/retrieve-subscription": {
+      "get": {
         "description": "",
         "parameters": [
           {
@@ -1417,6 +1527,96 @@
                 "type": "object",
                 "properties": {
                   "addon_id": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/aws/all": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/aws/upload": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/orders/all": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/orders/create": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "order": {
                     "example": "any"
                   }
                 }
