@@ -96,7 +96,7 @@ class OrderController {
       if (role === "admin") {
         orderQueryOptions.include.push({
           model: User,
-          attributes: ['id', 'email', 'full_name', 'phone', 'country', 'state', 'city', 'zip_code']
+          attributes: ['id', 'email', 'full_name', 'phone', 'country', 'state', 'city', 'zip_code',"avatar"]
         });
       } else {
         orderQueryOptions.where.user_id = id;
