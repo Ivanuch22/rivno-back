@@ -19,11 +19,10 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
-
 class UserController {
   async registration(req, res, next) {
-    const { email, password, full_name, country, isSendMessage, role = 'user' } = req.body;
+    const { email, password, full_name, country, isSendMessage } = req.body;
+    const role = 'user'
     if (!email || !password || !full_name) return next(ApiError.badRequest("Email, password and name are required"));
     try {
       const existingUser = await User.findOne({ where: { email } });
@@ -34,11 +33,13 @@ class UserController {
       const newUser = await User.create({
         email, full_name, country, isSendMessage, password: hashedPassword, role
       });
-      const { access, refresh } = generateJWT.tokens(newUser.id, newUser.email);
+      const { access, refresh } = generateJWT.tokens(newUser.id, newUser.email,newUser.role);
       await generateJWT.saveRefreshToken(newUser.id, refresh);
+      res.cookie("refreshToken", refresh, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
       res.json({
         status: 200,
-        access, refresh,
+        access,
+        refresh,
         user: { ...newUser.dataValues, password: undefined }
       });
     } catch (error) {
@@ -70,7 +71,7 @@ class UserController {
       if (!email) return next(ApiError.badRequest("Bad email"));
       const candidate = await User.findOne({ where: { email } });
       if (!candidate) return next(ApiError.badRequest("Bad email"));
-      const token = generateJWT.acess(candidate.id, candidate.email);
+      const token = generateJWT.acess(candidate.id, candidate.email,candidate.role);
       sendVerification(email, token);
       return res.json({ status: 200, message: "Message send" });
     }
@@ -84,8 +85,8 @@ class UserController {
     try {
       const { email, password } = req.body;
 
-      // if (!email) return next(ApiError.badRequest("Enter email"));
-      // if (!password) return next(ApiError.badRequest("Enter password"));
+      if (!email) return next(ApiError.badRequest("Enter email"));
+      if (!password) return next(ApiError.badRequest("Enter password"));
 
       const user = await User.findOne({ where: { email } });
       if (!user) return next(ApiError.badRequest("User is not found"));
@@ -93,15 +94,16 @@ class UserController {
       let comparePasswordd = bcrypt.compareSync(password, user.password);
       if (!comparePasswordd) return next(ApiError.badRequest("User password incorect"));
 
-      const token = generateJWT.tokens(user.id, user.email);
+      const token = generateJWT.tokens(user.id, user.email,user.role);
       const userWithoutPassword = { ...user.dataValues, password: undefined }; // Видаляємо пароль перед поверненням даних
-      generateJWT.updateRefreshToken(user.id, token.refresh);
+      generateJWT.saveRefreshToken(user.id, token.refresh);
+      res.cookie("refreshToken", token.refresh, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+
       return res.json({ access: token.access, refresh: token.refresh, user: userWithoutPassword });
 
     } catch (error) {
       return next(ApiError.internal("Internal Server Error", error));
     }
-
   }
 
   async forgotPassword(req, res, next) {
@@ -139,14 +141,18 @@ class UserController {
 
   async refreshToken(req, res, next) {
     try {
-      const { refreshToken } = req.body;
+      const { refreshToken } = req.cookies;
+      console.log("seargin token", refreshToken)
       if (!refreshToken) return next(ApiError.badRequest("Refresh token not found"));
       const existingToken = await Token.findOne({ where: { refreshToken } });
       if (!existingToken) return next(ApiError.badRequest("Invalid refresh token."));
+      console.log("sending token")
       jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH, (err, user) => {
         if (err) return next(ApiError.badRequest("Invalid refresh token."));
-        const tokens = generateJWT.tokens(user.id, user.email);
-        generateJWT.updateRefreshToken(user.id, tokens.refresh);
+        const tokens = generateJWT.tokens(user.id, user.email,user.role);
+        generateJWT.saveRefreshToken(user.id, tokens.refresh);
+        res.cookie("refreshToken", tokens.refresh, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+
         res.json({ status: 200, tokens });
       });
     } catch (error) {
@@ -192,71 +198,47 @@ class UserController {
   }
 
   async updateProfile(req, res, next) {
-      const { id } = req.user;
-      const {
-        full_name,
-        phone,
-        country,
-        city,
-        state,
-        zip_code,
-        alternate_email,
-        alternate_phone,
-        secret_question,
-        secret_answer,
-      } = req.body;
-
-      try {
-        const updatedUser = await User.update(
-          {
-            full_name,
-            phone,
-            country,
-            city,
-            state,
-            zip_code,
-            alternate_email,
-            alternate_phone,
-            secret_question,
-            secret_answer,
-          },
-          { where: { id: id }, returning: true, plain: true }
-        );
-
-        res.json({ message: 'Profile updated successfully', user: updatedUser[1] });
-      } catch (error) {
-        res.json({  message: "Profile updated failed", user: {} })
-        next(error);
-      }
-    };
-
-  async updateAvatar(req, res, next) {
+    const { id } = req.user;
+    const {
+      avatar,
+      full_name,
+      phone,
+      country,
+      city,
+      state,
+      zip_code,
+      alternate_email,
+      alternate_phone,
+      secret_question,
+      secret_answer,
+    } = req.body;
 
     try {
-      const { id } = req.user; // Assuming userId is available in req.user
-      let avatarUrl = null;
+      const updatedUser = await User.update(
+        {
+          avatar,
+          full_name,
+          phone,
+          country,
+          city,
+          state,
+          zip_code,
+          alternate_email,
+          alternate_phone,
+          secret_question,
+          secret_answer,
+        },
+        { where: { id: id }, returning: true, plain: true }
+      );
 
-      if (req.files && req.files.avatar) {
-        const avatar = req.files.avatar;
-        const avatarPath = path.join(__dirname, '../userImages', `${id}_${Date.now()}_${avatar.name}`);
-        avatar.mv(avatarPath, (err) => {
-          if (err) {
-            return next(ApiError.internal('Failed to upload avatar', err));
-          }
-        });
-
-        avatarUrl = `${process.env.PUBLIC_URL}:${process.env.PORT}/userImages/${path.basename(avatarPath)}`;
-        const updatedUser = await User.update({avatar: avatarUrl },
-          { where: { id }, returning: true, plain: true }
-          )
-        return res.json({avatarUrl, user: updatedUser[1]})
-      }
-
-    } catch (e) {
-      console.log(e)
+      res.json({ message: 'Profile updated successfully', user: updatedUser[1] });
+    } catch (error) {
+      res.json({ message: "Profile updated failed", user: {} })
+      next(error);
     }
+  };
 
-  }
+
 }
 
 module.exports = new UserController();

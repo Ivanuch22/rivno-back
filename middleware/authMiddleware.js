@@ -8,7 +8,6 @@ module.exports = (req, res, next) => {
 
   try {
     const authorizationHeader = req.headers.authorization;
-    console.log(authorizationHeader)
     if (!authorizationHeader) {
       return next(ApiError.unauthorized("Authorization header not found"));
     }
@@ -22,7 +21,6 @@ module.exports = (req, res, next) => {
     if (!token) {
       return next(ApiError.unauthorized("Token not found"));
     }
-    console.log(token,"token")
     const decoded = jwt.verify(token, process.env.SECRET_KEY_ACESS);
 
     if (!decoded) {

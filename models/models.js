@@ -418,6 +418,7 @@ Addon.belongsTo(Plan, {
 });
 
 
+
 User.hasMany(UserInvoice, { foreignKey: "user_id" });
 UserInvoice.belongsTo(User, { foreignKey: "user_id" });
 
