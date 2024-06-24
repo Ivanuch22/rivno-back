@@ -20,7 +20,7 @@ const HOST = process.env.HOST || "0.0.0.0";
 
 const app = express();
 const corsOptions = {
-  origin: 'https://rivno.com.ua/',
+  origin: 'https://rivno.com.ua',
   credentials: true,
 };
 
