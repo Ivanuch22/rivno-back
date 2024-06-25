@@ -40,17 +40,25 @@ app.use(
   })
 )
 
+
+
 app.use(passport.initialize())
 app.use(passport.session());
 app.post("/webhook", express.raw({ type: 'application/json' }), stripeController.webhook);
 
 app.use(express.static('public'));
 app.use('/userImages', express.static('userImages')); 
-app.use(express.urlencoded({extended:true}))
-app.use(express.json());
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: '50mb' }));
 app.use(cookieParser())
 app.use(fileUpload({}));
 app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://rivno.com.ua"); // Adjust the origin according to your needs
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 
 app.use("/api", router);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
