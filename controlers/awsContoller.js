@@ -1,4 +1,4 @@
-const upload = require('../services/s3Service');
+const {upload} = require('../services/s3Service');
 
 
 class AwsController {

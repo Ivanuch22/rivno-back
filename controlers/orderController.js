@@ -1,5 +1,6 @@
 const {  User, Order,Status} = require("../models/models");
 const ApiError = require("../error/AppiError");
+const {S3} = require('../services/s3Service');
 
 class OrderController {
 
@@ -12,11 +13,23 @@ class OrderController {
 
       const user = await User.findOne({ where: { id } });
       if(!user)return next(ApiError.badRequest(`user not found`));
+      const fieldsToConvert = [
+        'photo1', 'photo2', 'photo3', 'photo4', 'photo5', 'photo6',
+        'xray', 'ctScan', 'scan1', 'scan2'
+      ];
+  
+      fieldsToConvert.forEach(field => {
+        if (order[field] && typeof order[field] === 'object') {
+          order[field] = JSON.stringify(order[field]);
+        }
+      });
+
 
       const createOrder = await Order.create({...order, user_id: id, status_id: 1})
       if(!createOrder) return next(ApiError.badRequest("order not created"))
       return res.json({ message: "order success created" });
     } catch (err) {
+      console.log(err)
       return next(ApiError.internal(`Error adding letter: ${err.message}`));
     }
   }
@@ -117,6 +130,26 @@ class OrderController {
       return res.json({ order: response });
     } catch (err) {
       return next(ApiError.internal(`Error fetching order: ${err.message}`));
+    }
+  }
+  async getPresignedUrls(req, res, next) {
+    try {
+      const { fileKeys } = req.body;
+      if (!fileKeys || fileKeys.length === 0) {
+        return next(ApiError.badRequest("No file keys provided"));
+      }
+
+      const presignedUrls = fileKeys.map(key => {
+        return S3.getSignedUrl('getObject', {
+          Bucket: process.env.S3_BUCKET_NAME,
+          Key: key,
+          Expires: 60 * 5 // URL valid for 5 minutes
+        });
+      });
+
+      return res.json({ urls: presignedUrls });
+    } catch (err) {
+      return next(ApiError.internal(`Error generating presigned URLs: ${err.message}`));
     }
   }
 }
