@@ -190,7 +190,7 @@ class UserController {
       const htmlContent = fs.readFileSync(filePath, "utf-8");
       const updatedHtml = htmlContent.replace("${TOKEN}", token);
       const resetUrl = `${process.env.PUBLIC_URL}:${process.env.PORT}/api/users/reset-password`;
-      const finalHtml = updatedHtml.replace("http://localhost:5500/api/users/reset-password", resetUrl);
+      const finalHtml = updatedHtml.replace("https://api.rivno.com.ua/api/users/reset-password", resetUrl);
       res.send(finalHtml);
     } catch (error) {
       return next(ApiError.internal("Internal Server Error", error));
