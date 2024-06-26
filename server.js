@@ -20,7 +20,7 @@ const HOST = process.env.HOST || "0.0.0.0";
 
 const app = express();
 const corsOptions = {
-  origin: 'https://rivno.com.ua',
+  origin: process.env.FRONT_URL,
   credentials: true,
 };
 
@@ -54,7 +54,7 @@ app.use(cookieParser())
 app.use(fileUpload({}));
 app.use(cors(corsOptions));
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://rivno.com.ua"); // Adjust the origin according to your needs
+  res.header("Access-Control-Allow-Origin", process.env.FRONT_URL); // Adjust the origin according to your needs
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
