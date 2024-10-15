@@ -12,7 +12,6 @@ const models = require("./models/models");
 const router = require("./routes/index");
 const errorHandler = require("./middleware/ErrorHandlingMiddleware");
 const specs = require('./new-swagger-output.json');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const stripeController = require('./controlers/stripeController');
 const cookieParser = require("cookie-parser")
 const PORT = process.env.PORT || 5500;
@@ -54,7 +53,7 @@ app.use(cookieParser())
 app.use(fileUpload({}));
 app.use(cors(corsOptions));
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.FRONT_URL); // Adjust the origin according to your needs
+  res.header("Access-Control-Allow-Origin", process.env.FRONT_URL);
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });

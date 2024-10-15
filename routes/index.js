@@ -20,7 +20,7 @@ router.use("/auth",googleRouter );
 router.use("/status",statusRouter );
 router.use("/plan",planRouter );
 router.use("/letter",letterRouter );
-router.use('/stripe', stripeRouter);
+// router.use('/stripe', stripeRouter);
 router.use('/subscription', subscriptionRouter);
 router.use('/tikets', tiketRouter);
 router.use('/addons', addonRouter);

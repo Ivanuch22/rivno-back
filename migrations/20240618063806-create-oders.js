@@ -163,7 +163,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      status_Id: {
+      status_id: {
         type: Sequelize.INTEGER,
         references: {
           model: 'status',

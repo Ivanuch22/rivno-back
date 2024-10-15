@@ -10,7 +10,7 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.addColumn('plans', 'stripe_id', {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       unique: true
   });
   }

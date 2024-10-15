@@ -3,7 +3,7 @@
     "username": "postgres",
     "password": "0000000000",
     "database": "postgres",
-    "host": "database-1.c36ycqskmkxg.eu-north-1.rds.amazonaws.com",
+    "host": "database-1.c70a8yo4wz9t.eu-north-1.rds.amazonaws.com",
     "dialect": "postgres",
     "port": 5432,
     "dialectOptions": {
@@ -17,7 +17,7 @@
     "username": "postgres",
     "password": "0000000000",
     "database": "postgres",
-    "host": "database-1.c36ycqskmkxg.eu-north-1.rds.amazonaws.com",
+    "host": "database-1.c70a8yo4wz9t.eu-north-1.rds.amazonaws.com",
     "dialect": "postgres",
     "port": 5432,
     "dialectOptions": {
@@ -31,7 +31,7 @@
     "username": "postgres",
     "password": "0000000000",
     "database": "postgres",
-    "host": "database-1.c36ycqskmkxg.eu-north-1.rds.amazonaws.com",
+    "host": "database-1.c70a8yo4wz9t.eu-north-1.rds.amazonaws.com",
     "dialect": "postgres",
     "port": 5432,
     "dialectOptions": {
